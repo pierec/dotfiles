@@ -11,7 +11,11 @@ import sys
 
 def main():
     args = read_args()
-    symlink_files_from_dir(args.src_dir, args.dst_dir)
+    symlink_files_from_dir(
+        src_dpath=args.src_dir,
+        dst_dpath=args.dst_dir,
+        force=args.force,
+    )
 
 
 def read_args():
@@ -20,27 +24,32 @@ def read_args():
         os.path.dirname(sys.argv[0])
     )
     argparser.add_argument(
-        '--src-dir',
-        help='Source dir.',
-        default=os.path.join(script_dir, 'home_root')
+        '-s', '--src-dir',
+        help='Source directory.',
+        default=os.path.join(script_dir, 'home_root'),
     )
     argparser.add_argument(
-        '--dst-dir',
-        help='Destination dir.',
+        '-d', '--dst-dir',
+        help='Destination directory.',
         default=os.path.expanduser('~'),
+    )
+    argparser.add_argument(
+        '-f', '--force',
+        help='Overwrite target files without asking.',
+        action='store_true',
     )
 
     return argparser.parse_args()
 
 
-def symlink_files_from_dir(src_dpath, dst_dpath):
+def symlink_files_from_dir(src_dpath, dst_dpath, force=False):
     """Symlink all files found in source dir to analogous paths in destination
     dir. Create intermediate directories as needed."""
     for fpath in get_files(src_dpath):
         src_fpath = os.path.join(src_dpath, fpath)
         dst_fpath = os.path.join(dst_dpath, fpath)
         print('\'{}\' -> \'{}\''.format(src_fpath, dst_fpath))
-        symlink(src_fpath, dst_fpath)
+        symlink(src_fpath, dst_fpath, force)
 
 
 def get_files(path):
@@ -52,10 +61,10 @@ def get_files(path):
             )
 
 
-def symlink(src, dst):
+def symlink(src, dst, force=False):
     """Make a file symlink. Do nothing if destination file is already linked
     to source file. If a file would be overwritten, ask for user's
-    confirmation.
+    confirmation, unless 'force' flag is set.
 
     Missing intermediate directories will be created.
     """
@@ -70,7 +79,12 @@ def symlink(src, dst):
     except OSError as err:
         if err.errno != errno.EEXIST:
             raise
-        overwrite = ask('Overwrite \'{}\'?'.format(dst), default=True)
+
+        if force:
+            overwrite = True
+        else:
+            overwrite = ask('Overwrite \'{}\'?'.format(dst), default=True)
+
         if overwrite:
             os.unlink(dst)
             os.symlink(src, dst)
@@ -84,27 +98,24 @@ def makedirs(path, mode=0755, exist_ok=True):
             raise
 
 
-def ask(msg, default=True):
+def ask(msg, default=False):
     if default:
-        prompt = '[Y/n]'
+        yn_prompt = '[Y/n]'
     else:
-        prompt = '[y/N]'
+        yn_prompt = '[y/N]'
 
     responses = {
         'y': True,
         'n': False,
-        '': default
+        '': default,
     }
 
-    print('{} {} '.format(msg), end='')
-
+    prompt = '{} {}'.format(msg, yn_prompt)
     while True:
         print(prompt + ' ', end='')
         response = raw_input().lower()
         if response in responses:
             break
-        else:
-            print('')
 
     return responses[response]
 
