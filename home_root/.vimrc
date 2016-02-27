@@ -16,13 +16,12 @@ set expandtab
 
 " UI
 set number
-set cursorline
 set showcmd
 set wildmenu
 set lazyredraw
 set showmatch
 
-au FileType python set colorcolumn=81
+au FileType python set colorcolumn=80
 au FileType python set textwidth=79
 
 " SEARCH
