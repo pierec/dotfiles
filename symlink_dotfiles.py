@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -90,7 +90,7 @@ def symlink(src, dst, force=False):
             os.symlink(src, dst)
 
 
-def makedirs(path, mode=0755, exist_ok=True):
+def makedirs(path, mode=0o755, exist_ok=True):
     try:
         os.makedirs(path, mode)
     except OSError as err:
@@ -113,7 +113,12 @@ def ask(msg, default=False):
     prompt = '{} {}'.format(msg, yn_prompt)
     while True:
         print(prompt + ' ', end='')
-        response = raw_input().lower()
+        sys.stdout.flush()
+        response = (
+            sys.stdin.readline()
+            .lower()
+            .strip()
+        )
         if response in responses:
             break
 
