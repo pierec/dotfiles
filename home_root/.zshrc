@@ -8,20 +8,13 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 plugins=(git, virtualenv-prompt)
 
 # User configuration
-  PROFILE="$HOME/.profile"
   ZSHRC_PRIVATE="$HOME/.zshrc-private"  
-
-  if [ -f "$PROFILE" ]; then
-      source "$PROFILE"
-  fi
 
   if [ -f "$ZSHRC_PRIVATE" ]; then
       source "$ZSHRC_PRIVATE"
   fi
 
-  export GOROOT=$HOME/.local/go
   export EDITOR=vim
-  export PATH=$HOME/.local/bin:$PATH
 
   alias cd..="cd .."
   alias gut="git"
