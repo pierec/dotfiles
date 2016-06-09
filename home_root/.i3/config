@@ -170,4 +170,3 @@ bar {
 exec xsetroot -bg black
 exec $HOME/.fehbg
 exec dunst
-exec xset r rate 175 20
