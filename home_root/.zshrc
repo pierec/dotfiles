@@ -22,4 +22,11 @@ plugins=(git, virtualenv-prompt)
   alias noblank='xset s off; xset -dpms; xset s noblank;'
   alias secondscreen='xrandr --output HDMI2 --right-of eDP1 --auto && noblank'
 
+  source /usr/bin/virtualenvwrapper_lazy.sh
+
+  NVM_INIT_SCRIPT="$HOME/.local/bin/init-nvm.sh"
+  nvm () {
+    [ -f "$NVM_INIT_SCRIPT" ] && source "$NVM_INIT_SCRIPT" && nvm $@
+  }
+
 source $ZSH/oh-my-zsh.sh
