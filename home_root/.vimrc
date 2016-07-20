@@ -16,8 +16,8 @@ Plug 'itchyny/lightline.vim'
 Plug 'moll/vim-bbye'
 Plug 'wellle/targets.vim'
 Plug 'leafgarland/typescript-vim'
-Plug 'shougo/unite.vim'
-Plug 'shougo/vimproc.vim'
+Plug 'majutsushi/tagbar'
+Plug 'sheerun/vim-polyglot'
 
 " PLUGINS - THEMES
 Plug 'morhetz/gruvbox'
@@ -53,15 +53,15 @@ set laststatus=2
 set incsearch
 set hlsearch
 
-" turn off search highlight
-nnoremap <leader><space> :nohlsearch<CR>
+" BACKUPS
+set noswapfile
+set backupdir=/tmp//
+
+" LEADER KEY
+let mapleader=" "
 
 " YCM
 let g:ycm_filetype_whitelist = {'javascript': 1, 'python': 1, 'typescript': 1}
-nnoremap <F1> :YcmCompleter GoToDefinition<CR>
-
-" NERDTREE
-nnoremap <F2> :NERDTreeToggle<CR> 
 
 " SYNTASTIC
 set statusline+=%#warningmsg#
@@ -69,39 +69,143 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
+let g:syntastic_auto_loc_list = 2
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
-let g:syntastic_python_checkers = ['pep8', 'flake8', 'pychecker']
+let g:syntastic_python_checkers = ['pep8', 'flake8', 'python']
 let g:syntastic_aggregate_error = 1
 let g:syntastic_loc_list_height = 5
+let g:syntastic_aggregate_errors = 1
 
-" JEDI
-let g:jedi#force_py_version = 3
-
-
-" SHORTCUTS
-let mapleader=" "
-nnoremap <leader><up> <C-W><C-K>
-nnoremap <leader><down> <C-W><C-J>
-nnoremap <leader><right> <C-W><C-L>
-nnoremap <leader><left> <C-W><C-H>
-nnoremap <leader>w :bnext<CR>
-nnoremap <leader>q :bprevious<CR>
-nnoremap <leader>x :Bd<CR>
-nnoremap <leader>X :bd<CR>
+" AIRLINE
+let g:airline_extensions = ['syntastic', 'ctrlp']
 
 " CTRLP
 let g:ctrlp_map = '<leader>f'
 let g:ctrlp_cmd = 'CtrlPMixed'
-let g:ctrlp_working_path_mode = 'ra' 
+let g:ctrlp_working_path_mode = 'ra'
 
-" UNITE
-"call unite#filters#matcher_default#use(['matcher_fuzzy'])
-"nnoremap <leader>t :<C-u>UniteWithProjectDir -no-split -buffer-name=files -start-insert file_rec/async:!<cr>
-"nnoremap <leader>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
-"nnoremap <leader>r :<C-u>Unite -no-split -buffer-name=mru   -start-insert file_mru<cr>
-"nnoremap <leader>e :<C-u>Unite -no-split -buffer-name=buffer  buffer<cr>
+" SHORTCUTS
+nnoremap <leader>k <C-W><C-K>
+nnoremap <leader>j <C-W><C-J>
+nnoremap <leader>l <C-W><C-L>
+nnoremap <leader>h <C-W><C-H>
+nnoremap <leader>x :Bd<CR>
+nnoremap <leader>X :bd<CR>
+
+nnoremap <leader>b :CtrlPBuffer<CR>
+
+nnoremap <leader>g :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>q :nohlsearch<CR>
+
+nnoremap <F1> :TagbarToggle<CR>
+nnoremap <F2> :NERDTreeToggle<CR>
 
 " SET TERM TITLE
 set title
+
+
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], ['ctrlpmark'] ],
+      \   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \ },
+      \ 'component_function': {
+      \   'filename': 'LightLineFilename',
+      \   'fileformat': 'LightLineFileformat',
+      \   'filetype': 'LightLineFiletype',
+      \   'fileencoding': 'LightLineFileencoding',
+      \   'mode': 'LightLineMode',
+      \   'ctrlpmark': 'CtrlPMark',
+      \ },
+      \ 'component_expand': {
+      \   'syntastic': 'SyntasticStatuslineFlag',
+      \ },
+      \ 'component_type': {
+      \   'syntastic': 'error',
+      \ },
+      \ 'subseparator': { 'left': '|', 'right': '|' }
+      \ }
+
+function! LightLineModified()
+  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! LightLineReadonly()
+  return &ft !~? 'help' && &readonly ? 'RO' : ''
+endfunction
+
+function! LightLineFilename()
+  let fname = expand('%:t')
+  return fname == 'ControlP' && has_key(g:lightline, 'ctrlp_item') ? g:lightline.ctrlp_item :
+        \ fname == '__Tagbar__' ? g:lightline.fname :
+        \ fname =~ '__Gundo\|NERD_tree' ? '' :
+        \ &ft == 'unite' ? unite#get_status_string() :
+        \ ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
+        \ ('' != fname ? fname : '[No Name]') .
+        \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
+endfunction
+
+function! LightLineFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! LightLineFiletype()
+  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
+function! LightLineFileencoding()
+  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+endfunction
+
+function! LightLineMode()
+  let fname = expand('%:t')
+  return fname == '__Tagbar__' ? 'Tagbar' :
+        \ fname == 'ControlP' ? 'CtrlP' :
+        \ winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
+function! CtrlPMark()
+  if expand('%:t') =~ 'ControlP' && has_key(g:lightline, 'ctrlp_item')
+    call lightline#link('iR'[g:lightline.ctrlp_regex])
+    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
+          \ , g:lightline.ctrlp_next], 0)
+  else
+    return ''
+  endif
+endfunction
+
+let g:ctrlp_status_func = {
+  \ 'main': 'CtrlPStatusFunc_1',
+  \ 'prog': 'CtrlPStatusFunc_2',
+  \ }
+
+function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
+  let g:lightline.ctrlp_regex = a:regex
+  let g:lightline.ctrlp_prev = a:prev
+  let g:lightline.ctrlp_item = a:item
+  let g:lightline.ctrlp_next = a:next
+  return lightline#statusline(0)
+endfunction
+
+function! CtrlPStatusFunc_2(str)
+  return lightline#statusline(0)
+endfunction
+
+let g:tagbar_status_func = 'TagbarStatusFunc'
+
+function! TagbarStatusFunc(current, sort, fname, ...) abort
+    let g:lightline.fname = a:fname
+  return lightline#statusline(0)
+endfunction
+
+augroup AutoSyntastic
+  autocmd!
+  autocmd BufWritePost *.c,*.cpp call s:syntastic()
+augroup END
+function! s:syntastic()
+  SyntasticCheck
+  call lightline#update()
+endfunction
+
