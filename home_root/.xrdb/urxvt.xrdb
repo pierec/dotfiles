@@ -6,6 +6,7 @@ URxvt*iso14755:         false
 URxvt*saveLines:		8192
 URxvt.scrollBar:		false
 URxvt.loginShell:		true
+URxvt.fading:           5
 
 #if defined(COLOR_FG) && defined(COLOR_BG)
 URxvt.background:              COLOR_BG

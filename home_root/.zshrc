@@ -20,7 +20,8 @@ plugins=(git, virtualenv-prompt)
   alias gut="git"
   alias prettyjson="python -mjson.tool"
   alias noblank='xset s off; xset -dpms; xset s noblank;'
-  alias secondscreen='xrandr --output HDMI2 --right-of eDP1 --auto && noblank'
+  alias secondscreen='xrandr --output HDMI2 --right-of eDP1 --rotate normal --auto && noblank'
+  alias secondscreen_vertical='xrandr --output HDMI2 --right-of eDP1 --rotate left --auto && noblank'
 
   source /usr/bin/virtualenvwrapper_lazy.sh
 
