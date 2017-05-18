@@ -1,2 +1,10 @@
 #include "/home/pierec/.xrdb/sourcerer.xrdb"
 #include "/home/pierec/.xrdb/urxvt.xrdb"
+
+Xft.autohint: 1
+Xft.lcdfiter: lcddefault
+Xft.antialias: 1
+Xft.hinting: 1
+Xft.hintstyle: hintmedium
+!Xft.dpi: 96
+Xft.rgba: rgb

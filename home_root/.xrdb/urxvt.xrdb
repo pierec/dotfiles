@@ -1,11 +1,13 @@
-/* urxvt.xrdb --- X resource file for rxvt-unicode -*- xrdb -*- */
 URxvt.termName:         rxvt-256color
-URxvt*font:             -gohu-gohufont-medium-*-normal-*-14-*-*-*-*-*-*-1
+URxvt*font: \
+    xft:xos4 Terminus:style=Regular:pixelsize=18 \
+    xft:Gohu Gohufont:style=Regular:pixelsize=14 \
+    xft:Misc Tamsyn:style=Regular:pixelsize=18:antialias=false \
+    xft:Noto Emoji:style=Regular
 URxvt*scrollBar:        false
 URxvt*iso14755:         false
 URxvt*saveLines:		8192
 URxvt.scrollBar:		false
 URxvt.loginShell:		true
-/*URxvt.fading:           5*/
 URxvt.jumpScroll:       true
-URxvt.cursorBlink:      true
+/*URxvt.letterSpace:      -1*/

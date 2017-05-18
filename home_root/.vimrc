@@ -5,15 +5,15 @@ set nobackup
 
 " PLUGINS
 call plug#begin('~/.vim/plugged')
-Plug 'Valloric/YouCompleteMe'
-"Plug 'Shougo/neocomplete.vim'
 Plug 'Shougo/vimproc.vim'
+Plug 'Valloric/YouCompleteMe'
 Plug 'csexton/trailertrash.vim'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'fisadev/vim-isort'
+Plug 'easymotion/vim-easymotion'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'junegunn/goyo.vim'
 Plug 'justinmk/vim-dirvish'
 Plug 'leafgarland/typescript-vim'
-Plug 'mileszs/ack.vim'
 Plug 'moll/vim-bbye'
 Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdcommenter'
@@ -23,18 +23,14 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'wellle/targets.vim'
-
+Plug 'tmhedberg/matchit'
 " PLUGINS - THEMES
-Plug 'morhetz/gruvbox'
-Plug 'flazz/vim-colorschemes'
+Plug 'xero/sourcerer.vim'
 call plug#end()
 
 " COLORSCHEME
-set t_Co=256
 set background=dark
 colorscheme sourcerer
-"highlight ColorColumn ctermbg=1
 
 " INDENTATION
 set tabstop=4
@@ -48,11 +44,10 @@ set showcmd
 set wildmenu
 set lazyredraw
 set showmatch
-set scrolloff=5
-set mouse=a
+set scrolloff=10
 
 au FileType python set colorcolumn=80
-au FileType python set textwidth=79
+"au FileType python set textwidth=79
 
 " CLIPBOARD
 set clipboard=unnamedplus
@@ -69,7 +64,7 @@ set hlsearch
 
 " BACKUPS
 set noswapfile
-set backupdir=/tmp//
+set backupdir=/tmp/
 
 " LEADER KEY
 let mapleader=" "
@@ -84,9 +79,7 @@ let g:syntastic_auto_loc_list = 2
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
-"let g:syntastic_python_checkers = ['pep8', 'flake8', 'python']
-let g:syntastic_python_checkers = ['pylint']
-let g:syntastic_python_pylint_exec = 'pylint'
+let g:syntastic_python_checkers = ['flake8', 'pep8']
 
 let g:syntastic_javascript_checkers = ['jshint']
 let g:syntastic_loc_list_height = 5
@@ -99,9 +92,14 @@ let g:ctrlp_working_path_mode = 'ra'
 
 " AIRLINE
 let g:airline_theme = 'raven'
+"let g:airline_powerline_fonts = 1
 
-" ISORT
-let g:vim_isort_map = ''
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.linenr = ''
 
 " AUTOCMD
 autocmd FileType c,cpp,python,javascript,shell autocmd BufWritePre <buffer> %s/\s\+$//e
@@ -123,8 +121,6 @@ nnoremap <leader>b :CtrlPBuffer<CR>
 
 nnoremap <leader>g :YcmCompleter GoToDefinition<CR>
 nnoremap <leader><leader> :nohlsearch<CR>
-
-nnoremap <F3> :TagbarToggle<CR>
 
 nnoremap ; :call NERDComment(0,"toggle")<CR>
 vnoremap ; :call NERDComment(0,"toggle")<CR>
